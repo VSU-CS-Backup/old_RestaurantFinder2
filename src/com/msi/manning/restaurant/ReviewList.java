@@ -29,7 +29,7 @@ public class ReviewList extends ListActivity {
     private static final String CLASSTAG = ReviewList.class.getSimpleName();
     private static final int MENU_CHANGE_CRITERIA = Menu.FIRST + 1;
     private static final int MENU_GET_NEXT_PAGE = Menu.FIRST;
-    private static final int NUM_RESULTS_PER_PAGE = 8;
+    private static final int NUM_RESULTS_PER_PAGE = 5;
     
     private TextView empty;    
     private ProgressDialog progressDialog;
@@ -79,7 +79,7 @@ public class ReviewList extends ListActivity {
         String criteriaLocation = application.getReviewCriteriaLocation();
 
         // get start from, an int, from extras
-        int startFrom = getIntent().getIntExtra(Constants.STARTFROM_EXTRA, 1);
+        int startFrom = getIntent().getIntExtra(Constants.STARTFROM_EXTRA, 0);
 
         loadReviews(criteriaLocation, criteriaCuisine, startFrom);
     }    
@@ -101,7 +101,7 @@ public class ReviewList extends ListActivity {
             case MENU_GET_NEXT_PAGE:
                 // increment the startFrom value and call this Activity again
                 intent = new Intent(Constants.INTENT_ACTION_VIEW_LIST);
-                intent.putExtra(Constants.STARTFROM_EXTRA, getIntent().getIntExtra(Constants.STARTFROM_EXTRA, 1)
+                intent.putExtra(Constants.STARTFROM_EXTRA, getIntent().getIntExtra(Constants.STARTFROM_EXTRA, 0)
                     + ReviewList.NUM_RESULTS_PER_PAGE);
                 startActivity(intent);
                 return true;

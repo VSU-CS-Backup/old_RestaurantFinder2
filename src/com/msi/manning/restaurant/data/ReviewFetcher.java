@@ -23,7 +23,8 @@ import javax.xml.parsers.SAXParserFactory;
 public class ReviewFetcher {
 
     private static final String CLASSTAG = ReviewFetcher.class.getSimpleName();
-    private static final String QBASE = "http://www.google.com/base/feeds/snippets/-/reviews?bq=[review%20type:restaurant]";
+    // private static final String QBASE = "http://www.google.com/base/feeds/snippets/-/reviews?bq=[review%20type:restaurant]";
+    private static final String QBASE = "http://navitend.com/androidinaction/reviews.php";
     private static final String QD_PREFIX = "[description:";
     private static final String QD_SUFFIX = "]";
     private static final String QL_PREFIX = "[location:";
@@ -69,16 +70,16 @@ public class ReviewFetcher {
 
         // build query
         this.query = ReviewFetcher.QBASE;
-        if ((rating != null) && !rating.equals("ALL")) {
-            this.query += (ReviewFetcher.QR_PREFIX + rating + ReviewFetcher.QR_SUFFIX);
-        }
-        if ((location != null) && !location.equals("")) {
-            this.query += (ReviewFetcher.QL_PREFIX + location + ReviewFetcher.QL_SUFFIX);
-        }
-        if ((description != null) && !description.equals("ANY")) {
-            this.query += (ReviewFetcher.QD_PREFIX + description + ReviewFetcher.QD_SUFFIX);
-        }
-        this.query += (ReviewFetcher.QSTART_INDEX + this.start + ReviewFetcher.QMAX_RESULTS + this.numResults);
+//        if ((rating != null) && !rating.equals("ALL")) {
+//            this.query += (ReviewFetcher.QR_PREFIX + rating + ReviewFetcher.QR_SUFFIX);
+//        }
+//        if ((location != null) && !location.equals("")) {
+//            this.query += (ReviewFetcher.QL_PREFIX + location + ReviewFetcher.QL_SUFFIX);
+//        }
+//        if ((description != null) && !description.equals("ANY")) {
+//            this.query += (ReviewFetcher.QD_PREFIX + description + ReviewFetcher.QD_SUFFIX);
+//        }
+//        this.query += (ReviewFetcher.QSTART_INDEX + this.start + ReviewFetcher.QMAX_RESULTS + this.numResults);
 
         Log.v(Constants.LOGTAG, " " + ReviewFetcher.CLASSTAG + " query - " + this.query);
     }
@@ -104,11 +105,27 @@ public class ReviewFetcher {
             xr.parse(new InputSource(url.openStream()));
             // after parsed, get record
             results = handler.getReviews();
+            
+            results.addAll(results);
+            results.addAll(results);
+
         } catch (Exception e) {
             Log.e(Constants.LOGTAG, " " + ReviewFetcher.CLASSTAG, e);
         }
+        
         long duration = System.currentTimeMillis() - startTime;
         Log.v(Constants.LOGTAG, " " + ReviewFetcher.CLASSTAG + " call and parse duration - " + duration);
-        return results;
+        
+        ArrayList<Review> resultsOnThisPage = new ArrayList<Review>();
+        int from = start;
+        int to;
+        if (results.size()<=start+numResults)
+        	to = results.size();
+        else
+        	to = start + numResults;
+        for (int i=from; i<to; i++)
+        	resultsOnThisPage.add(results.get(i));
+        return resultsOnThisPage;
+    //  return results;
     }
 }
